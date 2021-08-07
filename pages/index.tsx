@@ -1,8 +1,42 @@
+import React from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+const table = Array.from({ length: 26 }, (_, i) => Array.from({ length: 26 }, (_, j) => (j+i) % 26))
+
 export default function Home() {
+  const [key, setKey] = React.useState('LIMAO')
+  const [text, setText] = React.useState('ATACAR BASE SUL')
+  const [keyText, setKeyText] = React.useState('')
+  const [cipher, setCipher] = React.useState('')
+
+  React.useEffect(() => {
+    let textWithNoSpace = text.replace(/ /g, "")
+    let textWithkey = ""
+    let cipherText = ""
+    let size = key.length
+    
+    for(let i = 0; i < textWithNoSpace.length; i++) {
+      const pos = i % size
+
+      let letterFromText = textWithNoSpace.charAt(i)
+      let letterFromKey = key.charAt(pos)
+
+      const y = alphabet.indexOf(letterFromKey)
+      const x = alphabet.indexOf(letterFromText)
+      
+      const letterPosition = table[y][x]
+
+      cipherText += alphabet.charAt(letterPosition)
+      textWithkey += letterFromKey
+    }
+    setCipher(cipherText)
+    setKeyText(textWithkey)
+  }, [text, key])
+  
 
   return (
     <div className={styles.container}>
@@ -13,7 +47,11 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <input />
+        Chave: <input value={key} onChange={e => setKey(e.target.value.toUpperCase())} />
+        Texto: <input value={text} onChange={e => setText(e.target.value.toUpperCase())} />
+        <h3>Texto: {text.replace(/ /g, "")}</h3>
+        <h3>Texto com chave: {keyText}</h3>
+        <h3>Cifra: {cipher}</h3>
       </main>
 
       <footer className={styles.footer}>
