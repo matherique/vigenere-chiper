@@ -4,8 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-const table = Array.from({ length: 26 }, (_, i) => Array.from({ length: 26 }, (_, j) => (j+i) % 26))
+const table = Array.from({ length: 26 }, (_, i) => Array.from({ length: 26 }, (_, j) => alphabet.charAt((j+i) % 26)))
 
 export default function Home() {
   const [key, setKey] = React.useState('LIMAO')
@@ -18,7 +17,7 @@ export default function Home() {
     let textWithkey = ""
     let cipherText = ""
     let size = key.length
-    
+
     for(let i = 0; i < textWithNoSpace.length; i++) {
       const pos = i % size
 
@@ -27,10 +26,8 @@ export default function Home() {
 
       const y = alphabet.indexOf(letterFromKey)
       const x = alphabet.indexOf(letterFromText)
-      
-      const letterPosition = table[y][x]
 
-      cipherText += alphabet.charAt(letterPosition)
+      cipherText += table[y][x]
       textWithkey += letterFromKey
     }
     setCipher(cipherText)
