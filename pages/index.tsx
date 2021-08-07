@@ -70,13 +70,19 @@ export default function Home() {
           <div className={styles.table}>
             <span className={`${styles.x_line} ${styles.y_line}`}></span>
             {alphabet.split("").map((l, i) => (
-              <span className={styles.x_line} key={"x" + i}>
+              <span
+                className={`${styles.x_line} ${isCurrentRow(i)}`}
+                key={"x" + i}
+              >
                 {l}
               </span>
             ))}
             {table.map((x, i) => {
               return [
-                <span className={styles.y_line} key={"y" + i}>
+                <span
+                  className={`${styles.y_line} ${isCurrentCol(i)}`}
+                  key={"y" + i}
+                >
                   {alphabet.charAt(i)}
                 </span>,
                 ...x.map((y, j) => (
