@@ -1,43 +1,28 @@
 import React from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import { alphabet, alphabet_table, vigenere } from "../lib/vigenere-cipher";
 
-const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const table = Array.from({ length: 26 }, (_, i) =>
-  Array.from({ length: 26 }, (_, j) => alphabet.charAt((j + i) % 26))
-);
+const last = (text: string) => {
+  if (text === "") return "";
+
+  return text.split("")[text.length - 1];
+};
 
 export default function Home() {
   const [key, setKey] = React.useState("LIMAO");
   const [text, setText] = React.useState("ATACAR BASE SUL");
-  const [keyText, setKeyText] = React.useState("");
   const [cipher, setCipher] = React.useState("");
   const [typePos, setTypePos] = React.useState([-1, -1]);
 
   React.useEffect(() => {
-    let textWithNoSpace = text.replace(/ /g, "");
-    let textWithkey = "";
-    let cipherText = "";
-    let size = key.length;
-    let x = -1;
-    let y = -1;
+    const [result, keyText] = vigenere(text, key);
 
-    for (let i = 0; i < textWithNoSpace.length; i++) {
-      const pos = i % size;
+    const y = alphabet.indexOf(last(keyText));
+    const x = alphabet.indexOf(last(text));
 
-      let letterFromText = textWithNoSpace.charAt(i);
-      let letterFromKey = key.charAt(pos);
-
-      y = alphabet.indexOf(letterFromKey);
-      x = alphabet.indexOf(letterFromText);
-
-      cipherText += table[y][x];
-
-      textWithkey += letterFromKey;
-    }
     setTypePos([y, x]);
-    setCipher(cipherText);
-    setKeyText(textWithkey);
+    setCipher(result);
   }, [text, key]);
 
   function isSelected(x: number, y: number) {
@@ -77,7 +62,7 @@ export default function Home() {
                 {l}
               </span>
             ))}
-            {table.map((x, i) => {
+            {alphabet_table.map((x, i) => {
               return [
                 <span
                   className={`${styles.y_line} ${isCurrentCol(i)}`}
@@ -110,10 +95,8 @@ export default function Home() {
           <div>
             Texto:
             <h3>{text.replace(/ /g, "")}</h3>
-            Texto com chave:
-            <h3>{keyText}</h3>
             Cifra:
-            <h3>{cipher}</h3>
+            <h1>{cipher}</h1>
           </div>
         </div>
       </main>
