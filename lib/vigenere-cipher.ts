@@ -4,24 +4,25 @@ export const alphabet_table = Array.from({ length: 26 }, (_, i) =>
   Array.from({ length: 26 }, (_, j) => alphabet.charAt((j + i) % 26))
 );
 
-export function vigenere(text: string, key: string): [string, string] {
-  let keyText = "";
-  let resp = "";
-  const norm_text = text.replace(/ /g, "").toLocaleUpperCase();
-  const norm_key = key.toLocaleUpperCase();
+function normalize(text: string): string {
+  return text.replace(/ /g, "").toLocaleUpperCase();
+}
+
+export function vigenere(text: string, key: string): string {
+  let cipher_text = "";
+  const norm_text = normalize(text);
 
   for (let i = 0; i < norm_text.length; i++) {
     const pos = i % key.length;
 
-    const letterFromText = norm_text.charAt(i);
-    const letterFromKey = norm_key.charAt(pos);
+    const text_letter_position = alphabet.indexOf(norm_text[i]);
+    const key_letter_position = alphabet.indexOf(key[pos]);
 
-    let y = alphabet.indexOf(letterFromKey);
-    let x = alphabet.indexOf(letterFromText);
+    const cipher_letter_position =
+      (text_letter_position + key_letter_position) % 26;
 
-    resp += alphabet_table[y][x];
-    keyText += letterFromKey;
+    cipher_text += alphabet.charAt(cipher_letter_position);
   }
 
-  return [resp, keyText];
+  return cipher_text;
 }
